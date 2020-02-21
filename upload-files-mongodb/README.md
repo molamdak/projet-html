@@ -1,13 +1,9 @@
-## About
 
-This is a sample application written in EJS using MongoDB, Express to upload image/video/other files and display on dashboard page.
-
-## Instructions
-
-1. After git clone, run `npm install` command.
-
-2. Change MongoURI in app.js with your database, username and password
-
-3. `npm run dev`
-
-4. Open `localhost:5000` in your browser to play around adding image/videos/any files in MongoDB and perform operations on it.
+    Le titre du projet :  un site qui permet de stocker des vidéos
+    
+    La description du projet :site internet implémenté avec node js côté serveur et qui permettra d'héberger des vidéos des utilisateurs.
+   
+    membres de l’équipes et le rôle de chacun : Lamdak Mourad , Dufour Vicent
+   
+    technologies utilisées : Node js,Mongo db, express,jade,bootstrap
+    
