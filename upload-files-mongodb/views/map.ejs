@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Showcase Components</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+    <!--<link rel="stylesheet" href="../public/css/bootstrap.min.css"  integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous"/>
+    --><link rel="stylesheet" href="../public/styles/style.css"/>
+</head>
+<body>
+    <div class="container">
+        <img id="logo" src="./public/images/glasses.png" alt="glasses">
+        <div class="row">
+            <div class="col-md-6 m-auto">
+                <h2 class="text-center display-4 my-4">
+                    Fun Glasses
+                </h2>
+                <nav class="navbar navbar-inverse navbar-fixed-top"></nav>
+                    <div class="container-fluid">    
+                        <ul class="nav justify-content-center">
+                                <li class="nav-item">
+                                <a class="nav-link active" href="home">Home</a>
+                                </li>
+                                <li class="nav-item">
+                                <a class="nav-link" href="map">Map</a>
+                                </li>
+                                <li class="nav-item">
+                                <a class="nav-link" href="post">Post</a>
+                                </li>
+                                <li class="nav-item right">
+                                <a class="nav-link" href="logIn" tabindex="-1" aria-disabled="true">Log in</a>
+                                </li>
+                            </ul>
+                        </div>
+                </nav>
+                <!--The div element for the map https://www.freakyjolly.com/embed-google-maps-with-multiple-markers-and-infowindows-info-popups-open-on-click-or-mouse-hover/-->
+                <div id="map"></div>
+                <!--<hr>
+                <% if(files){ %>
+                    <% files.forEach(function(file){ %>
+                        <div class="card card-body mb-3">
+                            <% if(file.isImage){ %>
+                                <img class="images" src="image/<%= file.filename %>" alt="image">
+                            <% } else if(file.isVideo) { %>
+                                <video class="videos" id="videoPlayer" controls muted="muted" autoplay> 
+                                    <source src="video/<%= file.filename %>" type="video/mp4">
+                                </video>
+                            <% } else {%>
+                                <%= file.filename %>
+                            <% } %>
+                            <form method="POST" action="/files/<%= file._id %>?_method=DELETE">
+                                <button class="btn btn-danger btn-block mt-4">
+                                    Delete
+                                </button>
+                            </form>
+                        </div>
+                    <% }) %>
+                <% } else { %>
+                    <p> No files to show</p>
+                <% } %>   -->
+            </div>
+        </div>
+    </div>
+    <script src="../public/js/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+    crossorigin="anonymous" integrity=""></script>
+    <script>
+    $('input[type=file]').change(function () {
+        document.getElementsByClassName('custom-file-label')[0].innerHTML = this.files[0].name;
+        console.log(this.files[0].name)
+    })
+    </script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBNfWq9Mj95lT6PBQUFy_4I1DaO7vRXnHI"></script>
+    <script>
+        var map;
+        var InforObj = [];
+        var centerCords = {
+            lat: -25.344,
+            lng: 131.036
+        };
+        var markersOnMap = [{
+                placeName: "Australia (Uluru)",
+                LatLng: [{
+                    lat: -25.344,
+                    lng: 131.036
+                }]
+            },
+            {
+                placeName: "Australia (Melbourne)",
+                LatLng: [{
+                    lat: -37.852086,
+                    lng: 504.985963
+                }]
+            },
+            {
+                placeName: "Australia (Canberra)",
+                LatLng: [{
+                    lat: -35.299085,
+                    lng: 509.109615
+                }]
+            },
+            {
+                placeName: "Australia (Gold Coast)",
+                LatLng: [{
+                    lat: -28.013044,
+                    lng: 513.425586
+                }]
+            },
+            {
+                placeName: "Australia (Perth)",
+                LatLng: [{
+                    lat: -31.951994,
+                    lng: 475.858081
+                }]
+            }
+        ];
+
+        window.onload = function () {
+            initMap();
+        };
+
+        function addMarker() {
+            for (var i = 0; i < markersOnMap.length; i++) {
+                var contentString = '<div id="content"><h1>' + markersOnMap[i].placeName +
+                    '</h1><p>Lorem ipsum dolor sit amet, vix mutat posse suscipit id, vel ea tantas omittam detraxit.</p></div>';
+
+                const marker = new google.maps.Marker({
+                    position: markersOnMap[i].LatLng[0],
+                    map: map
+                });
+
+                const infowindow = new google.maps.InfoWindow({
+                    content: contentString,
+                    maxWidth: 200
+                });
+
+                marker.addListener('click', function () {
+                    closeOtherInfo();
+                    infowindow.open(marker.get('map'), marker);
+                    InforObj[0] = infowindow;
+                });
+                // marker.addListener('mouseover', function () {
+                //     closeOtherInfo();
+                //     infowindow.open(marker.get('map'), marker);
+                //     InforObj[0] = infowindow;
+                // });
+                // marker.addListener('mouseout', function () {
+                //     closeOtherInfo();
+                //     infowindow.close();
+                //     InforObj[0] = infowindow;
+                // });
+            }
+        }
+
+        function closeOtherInfo() {
+            if (InforObj.length > 0) {
+                /* detach the info-window from the marker ... undocumented in the API docs */
+                InforObj[0].set("marker", null);
+                /* and close it */
+                InforObj[0].close();
+                /* blank the array */
+                InforObj.length = 0;
+            }
+        }
+
+        function initMap() {
+            map = new google.maps.Map(document.getElementById('map'), {
+                zoom: 4,
+                center: centerCords
+            });
+            addMarker();
+        }
+    </script>
+    </body>
+</html>

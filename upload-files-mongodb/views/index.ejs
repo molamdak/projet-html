@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <title>Showcase Components</title>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+        <!--<link rel="stylesheet" href="../public/css/bootstrap.min.css"  integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous"/>
+        --><link rel="stylesheet" href="../public/styles/style.css"/>
+    </head>
+    <body>
+        <nav class="navbar navbar-inverse navbar-fixed-top"></nav>
+            <div class="container-fluid">
+                <img id="logo" src="./public/images/glasses.png" alt="glasses">
+                <div class="row">
+                    <div class="col-md-6 m-auto">
+                        <h2 class="text-center display-4 my-4">
+                            Fun Glasses
+                        </h2>
+                        <ul class="nav justify-content-center">
+                            <li class="nav-item">
+                            <a class="nav-link active" href="home">Home</a>
+                            </li>
+                            <li class="nav-item">
+                            <a class="nav-link" href="map">Map</a>
+                            </li>
+                            <li class="nav-item">
+                            <a class="nav-link" href="post">Post</a>
+                            </li>
+                            <li class="nav-item right">
+                            <a class="nav-link" href="logIn">Log in</a>
+                            </li>
+                        </ul>
+                    <!--<form action="/upload" method="POST"
+                        enctype="multipart/form-data">
+                            <div class="custom-file mb-3">
+                                <input type="file" name="file" id="file" class="custom-file-input">
+                                <label for="file" class="custom-file-label">Choose File</label>
+                            </div>
+                            <input type="submit" value="Submit" class="btn btn-primary btn-block"/>
+                        </form>-->
+                    <div class="container">
+                        <hr>
+                        <% if(files){ %>
+                            <% files.forEach(function(file){ %>
+                                <div class="card card-body mb-3">
+                                    <% if(file.isImage){ %>
+                                        <img class="images" src="image/<%= file.filename %>" alt="image">
+                                    <% } else if(file.isVideo) { %>
+                                        <video class="videos" id="videoPlayer" controls muted="muted" autoplay> 
+                                            <source src="video/<%= file.filename %>" type="video/mp4">
+                                        </video>
+                                    <% } else {%>
+                                        <%= file.filename %>
+                                    <% } %>
+                                    <form method="POST" action="/files/<%= file._id %>?_method=DELETE">
+                                        <button class="btn btn-danger btn-block mt-4">
+                                            Delete
+                                        </button>
+                                    </form>
+                                </div>
+                            <% }) %>
+                        <% } else { %>
+                            <p> No files to show</p>
+                        <% } %>   
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+    <script src="../public/js/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+    crossorigin="anonymous" integrity=""></script>
+    <script>
+    $('input[type=file]').change(function () {
+        document.getElementsByClassName('custom-file-label')[0].innerHTML = this.files[0].name;
+        console.log(this.files[0].name)
+    })
+    </script>
+    </body>
+</html>
