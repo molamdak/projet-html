@@ -7,6 +7,8 @@ const multer = require('multer');
 const GridFsStorage = require('multer-gridfs-storage');
 const GridFs = require('gridfs-stream');
 const methodOverride = require('method-override');
+const authRouter = require('./users/users.controller');
+const session = require('express-session');
 
 const app = express();
 //Use Middleware
@@ -14,12 +16,11 @@ app.use(bodyParser.json());
 app.use(methodOverride('_method'));
 app.set('view engine', 'ejs');
 
+app.use(session({ secret: 'password', cookie: { maxAge: 60000 }}))
 //Mongo URI
-//const mongoURI = "mongodb://admin:admin123@ds261096.mlab.com:61096/showcase-components"
 const mongoURI = "mongodb://localhost:27017/mydb";
 //Create Mongo Connection
 const conn = mongoose.createConnection(mongoURI);
-//const conn = mongoose.createConnection('mongodb://localhost:27017/mydb', {useNewUrlParser: true, useUnifiedTopology: true}); 
 
 //Init Mongo Gridfs
 let gfs;
@@ -29,7 +30,7 @@ conn.once('open', () => {
     gfs.collection('uploads')
 })
 
-//create storage engine - https://github.com/devconcept/multer-gridfs-storage
+//create storage engine 
 const storage = new GridFsStorage({
     url: mongoURI,
     file: (req, file) => {
@@ -58,8 +59,11 @@ app.use('/public', express.static(path.join(__dirname, '/public')))
 //---------ROUTES---------
 
 //@route GET home page
+app.use('/auth',authRouter);
 app.get(['/', '/home', 'index'], (req,res) => {
     //res.render('index');
+    console.log("session(home) : ", req.session);
+    
     gfs.files.find().toArray((err,files) => {
         // check if files
         if(!files || files.length === 0) {
@@ -162,16 +166,7 @@ app.get('/video/:filename', (req,res) => {
         }
         //check if video
         if(file.contentType === 'video/mp4') {
-            //Read output to browser
-            //const readstream = gfs.createReadStream(file.filename);
             
-            // readstream.on('error', function(err) {
-            //     if (err) {
-            //         return res.status(400).json({
-            //             err: 'Video not playing'
-            //         });
-            //     }
-            // }).pipe(res);
             if (req.headers['range']) {
                 var parts = req.headers['range'].replace(/bytes=/, "").split("-");
                 var partialstart = parts[0];

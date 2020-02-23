@@ -6,8 +6,14 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Showcase Components</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
-    <!--<link rel="stylesheet" href="../public/css/bootstrap.min.css"  integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous"/>
-    --><link rel="stylesheet" href="../public/styles/style.css"/>
+    <link rel="stylesheet" href="../public/styles/style.css"/>
+    <script>
+    if(sessionStorage.accessToken){
+      location = "/"
+    }
+
+
+    </script>
 </head>
 <body>
     <div class="container">
@@ -27,30 +33,26 @@
                     <li class="nav-item">
                       <a class="nav-link" href="post">Post</a>
                     </li>
-                    <li class="nav-item right">
-                      <a class="nav-link" href="logIn" tabindex="-1" aria-disabled="true">Log in</a>
-                    </li>
+                    <li id ="login" class="nav-item right">
+                        <a class="nav-link" href="logIn">Log in/Register</a>
+                        </li>
+                        <li id="logout" class="nav-item right" style="display: none;">
+                            <a id="submitLogout" class="nav-link" href="logIn">Logout</a>
+                        </li>
                   </ul>
 
-                  <form action="/action_page.php" method="post">
+                  <form id="form" action="" method="post">
                   
                     <div class="container">
-                      <label for="uname"><b>Username</b></label>
-                      <input type="text" placeholder="Enter Username" name="uname" required>
+                      <label for="username"><b>Username</b></label>
+                      <input type="text" placeholder="Enter Username" name="username" required>
                   
-                      <label for="psw"><b>Password</b></label>
-                      <input type="password" placeholder="Enter Password" name="psw" required>
-                          
-                      <button type="submit">Login</button>
-                      <label>
-                        <input type="checkbox" checked="checked" name="remember"> Remember me
-                      </label>
-                    </div>
-                  
-                    <div class="container" style="background-color:#f1f1f1">
-                      <button type="button" class="cancelbtn">Cancel</button>
-                      <span class="psw">Forgot <a href="#">password?</a></span>
-                    </div>
+                      <label for="password"><b>Password</b></label>
+                      <input type="password" placeholder="Enter Password" name="password" required>
+                      <input id="submitLogin" type="button" name="Login" value="login">
+                      <input id="submitRegister" type="button" name="Register" value="Register">
+
+                      
                 </form>
             </div>
         </div>
@@ -58,10 +60,94 @@
     <script src="../public/js/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
     crossorigin="anonymous" integrity=""></script>
     <script>
+       $.fn.serializeObject = function() {
+        var o = {};
+        var a = this.serializeArray();
+        console.log(a)
+        $.each(a, function() {
+            if (o[this.name]) {
+                if (!o[this.name].push) {
+                    o[this.name] = [o[this.name]];
+                }
+                o[this.name].push(this.value || '');
+            } else {
+                o[this.name] = this.value || '';
+            }
+        });
+        console.log(o);
+        return o;
+    };
+        $(document).ready(function(){
+        // click on button submit
+        $("#submitLogin").on('click', function(){
+            // send ajax
+            $.ajax({
+                url: '/auth/authenticate', // url where to submit the request
+                type : "POST", // type of action POST || GET
+                dataType : 'json', // data type
+                data : JSON.stringify($("#form").serializeObject()), // post data || get data
+                contentType: 'application/json;charset=UTF-8',
+                success : function(result) {
+                    // you can see the result from the console
+                    // tab of the developer tools
+                    console.log("result : ", result);
+                    sessionStorage.accessToken = result.token;
+                    location = '/';
+
+                },
+                error: function(xhr, resp, text) {
+                    alert("Username or password incorrect. (Press Register to create new account)");
+                }
+            })
+        });
+        $("#submitRegister").on('click', function(){
+            const data = JSON.stringify($("#form").serializeObject());
+            // send ajax
+            $.ajax({
+                url: '/auth/register', // url where to submit the request
+                type : "POST", // type of action POST || GET
+                dataType : 'json', // data type
+                data : JSON.stringify($("#form").serializeObject()), // post data || get data
+                contentType: 'application/json;charset=UTF-8',
+                success : function(result) {
+                    // you can see the result from the console
+                    // tab of the developer tools
+                    console.log("result : " + result);
+                    $.ajax({
+                        url: '/auth/authenticate', // url where to submit the request
+                        type : "POST", // type of action POST || GET
+                        dataType : 'json', // data type
+                        data : data, // post data || get data
+                        contentType: 'application/json;charset=UTF-8',
+                        success : function(result) {
+                            // you can see the result from the console
+                            // tab of the developer tools
+                            console.log("result : ", result);
+                            sessionStorage.accessToken = result.token;
+                            location = '/'; 
+
+                        },
+                        error: function(xhr, resp, text) {
+                            alert("Username or password incorrect. (Press Register to create new account)");
+                        }
+                    })
+                },
+                error: function(xhr, resp, text) {
+                  alert("Username already exists");
+
+                }
+            })
+        });
+    });
     $('input[type=file]').change(function () {
         document.getElementsByClassName('custom-file-label')[0].innerHTML = this.files[0].name;
         console.log(this.files[0].name)
     })
+    if(!sessionStorage.accessToken){
+    document.getElementById("login").style.display = "block";
+    document.getElementById("logout").style.display = "none";
+    
+    }
     </script>
     </body>
 </html>

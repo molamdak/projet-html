@@ -6,8 +6,13 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Showcase Components</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
-    <!--<link rel="stylesheet" href="../public/css/bootstrap.min.css"  integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous"/>
-    --><link rel="stylesheet" href="../public/styles/style.css"/>
+    <link rel="stylesheet" href="../public/styles/style.css"/>
+    <script>
+        if(!sessionStorage.accessToken){
+          location = "/logIn"
+        }
+
+        </script>
 </head>
 <body>
     <div class="container">
@@ -29,37 +34,17 @@
                                 <li class="nav-item">
                                 <a class="nav-link" href="post">Post</a>
                                 </li>
-                                <li class="nav-item right">
-                                <a class="nav-link" href="logIn" tabindex="-1" aria-disabled="true">Log in</a>
-                                </li>
+                                <li id ="login" class="nav-item right">
+                                    <a class="nav-link" href="logIn">Log in/Register</a>
+                                    </li>
+                                    <li id="logout" class="nav-item right" style="display: none;">
+                                        <a id="submitLogout" class="nav-link" href="logIn">Logout</a>
+                                    </li>
                             </ul>
                         </div>
                 </nav>
-                <!--The div element for the map https://www.freakyjolly.com/embed-google-maps-with-multiple-markers-and-infowindows-info-popups-open-on-click-or-mouse-hover/-->
                 <div id="map"></div>
-                <!--<hr>
-                <% if(files){ %>
-                    <% files.forEach(function(file){ %>
-                        <div class="card card-body mb-3">
-                            <% if(file.isImage){ %>
-                                <img class="images" src="image/<%= file.filename %>" alt="image">
-                            <% } else if(file.isVideo) { %>
-                                <video class="videos" id="videoPlayer" controls muted="muted" autoplay> 
-                                    <source src="video/<%= file.filename %>" type="video/mp4">
-                                </video>
-                            <% } else {%>
-                                <%= file.filename %>
-                            <% } %>
-                            <form method="POST" action="/files/<%= file._id %>?_method=DELETE">
-                                <button class="btn btn-danger btn-block mt-4">
-                                    Delete
-                                </button>
-                            </form>
-                        </div>
-                    <% }) %>
-                <% } else { %>
-                    <p> No files to show</p>
-                <% } %>   -->
+                
             </div>
         </div>
     </div>
@@ -70,6 +55,15 @@
         document.getElementsByClassName('custom-file-label')[0].innerHTML = this.files[0].name;
         console.log(this.files[0].name)
     })
+    if(sessionStorage.accessToken){
+
+    document.getElementById("login").style.display = "none";
+    document.getElementById("logout").style.display = "block";
+
+    }
+    $("#submitLogout").on('click', function(){
+            sessionStorage.removeItem('accessToken');
+        })
     </script>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBNfWq9Mj95lT6PBQUFy_4I1DaO7vRXnHI"></script>
     <script>
@@ -140,16 +134,7 @@
                     infowindow.open(marker.get('map'), marker);
                     InforObj[0] = infowindow;
                 });
-                // marker.addListener('mouseover', function () {
-                //     closeOtherInfo();
-                //     infowindow.open(marker.get('map'), marker);
-                //     InforObj[0] = infowindow;
-                // });
-                // marker.addListener('mouseout', function () {
-                //     closeOtherInfo();
-                //     infowindow.close();
-                //     InforObj[0] = infowindow;
-                // });
+                
             }
         }
 
